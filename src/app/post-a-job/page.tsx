@@ -21,7 +21,13 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { JOBTYPES } from "@/constants";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Link from "next/link";
 import InputSkills from "@/components/organisms/InputSkills";
 import CKEditor from "@/components/organisms/CKEditor";
@@ -29,7 +35,7 @@ import InputBenefits from "@/components/organisms/InputBenefit";
 import { Button } from "@/components/ui/button";
 
 const PostJobPage = () => {
-  const [editorLoaded, setEditorLoaded] = useState<boolean>(false)
+  const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof jobFormSchema>>({
     resolver: zodResolver(jobFormSchema),
@@ -43,8 +49,8 @@ const PostJobPage = () => {
   };
 
   useEffect(() => {
-    setEditorLoaded(true)
-  }, [])
+    setEditorLoaded(true);
+  }, []);
 
   return (
     <div>
@@ -140,11 +146,7 @@ const PostJobPage = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder="$100"
-                        {...field}
-                      />
+                      <Input className="w-full" placeholder="$100" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -171,56 +173,104 @@ const PostJobPage = () => {
           </FieldInput>
 
           <FieldInput title="Categories" subtitle="You can job categories">
-          <FormField
-          control={form.control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="w-[450px]">
-                    <SelectValue placeholder="Select Job Categories" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[450px]">
+                        <SelectValue placeholder="Select Job Categories" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="m@example.com">
+                        m@example.com
+                      </SelectItem>
+                      <SelectItem value="m@google.com">m@google.com</SelectItem>
+                      <SelectItem value="m@support.com">
+                        m@support.com
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </FieldInput>
 
-          <FieldInput title="Required Skill" subtitle="Add required skills for the job">
-            <InputSkills form={form} name="requiredSkill" label="Add Skill"/>
+          <FieldInput
+            title="Required Skill"
+            subtitle="Add required skills for the job"
+          >
+            <InputSkills form={form} name="requiredSkills" label="Add Skill" />
           </FieldInput>
 
-          <FieldInput title="Job Description" subtitle="Job titles must be describe one position">
-              <CKEditor form={form} name="jobDescription" editorLoaded={editorLoaded} />
+          <FieldInput
+            title="Job Description"
+            subtitle="Job titles must be describe one position"
+          >
+            <CKEditor
+              form={form}
+              name="jobDescription"
+              editorLoaded={editorLoaded}
+            />
           </FieldInput>
 
-          <FieldInput title="Responsibilities" subtitle="Outline the core responsibilities of the position">
-              <CKEditor form={form} name="responsibility" editorLoaded={editorLoaded} />
+          <FieldInput
+            title="Responsibilities"
+            subtitle="Outline the core responsibilities of the position"
+          >
+            <CKEditor
+              form={form}
+              name="responsibility"
+              editorLoaded={editorLoaded}
+            />
           </FieldInput>
 
-          <FieldInput title="Who You Are" subtitle="Add your preferred candidates qualifications">
-              <CKEditor form={form} name="whoYouAre" editorLoaded={editorLoaded} />
+          <FieldInput
+            title="Who You Are"
+            subtitle="Add your preferred candidates qualifications"
+          >
+            <CKEditor
+              form={form}
+              name="whoYouAre"
+              editorLoaded={editorLoaded}
+            />
           </FieldInput>
 
-          <FieldInput title="Nice-To-Haves" subtitle="Add nice-to-have skills and qualification for the role to encourage a more diverse set of candidates to apply">
-              <CKEditor form={form} name="niceToHaves" editorLoaded={editorLoaded} />
+          <FieldInput
+            title="Nice-To-Haves"
+            subtitle="Add nice-to-have skills and qualification for the role to encourage a more diverse set of candidates to apply"
+          >
+            <CKEditor
+              form={form}
+              name="niceToHaves"
+              editorLoaded={editorLoaded}
+            />
           </FieldInput>
 
-          <FieldInput title="Nice-To-Haves" subtitle="Add nice-to-have skills and qualification for the role to encourage a more diverse set of candidates to apply">
-              <CKEditor form={form} name="niceToHaves" editorLoaded={editorLoaded} />
+          <FieldInput
+            title="Nice-To-Haves"
+            subtitle="Add nice-to-have skills and qualification for the role to encourage a more diverse set of candidates to apply"
+          >
+            <CKEditor
+              form={form}
+              name="niceToHaves"
+              editorLoaded={editorLoaded}
+            />
           </FieldInput>
 
-          <FieldInput title="Perks and Benefits" subtitle="Encourage more people to apply by sharing the attractive rewards and benefits you offer your employees">
-              <InputBenefits form={form}/>
+          <FieldInput
+            title="Perks and Benefits"
+            subtitle="Encourage more people to apply by sharing the attractive rewards and benefits you offer your employees"
+          >
+            <InputBenefits form={form} />
           </FieldInput>
 
           <div className="flex justify-end">
