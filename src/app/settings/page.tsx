@@ -1,6 +1,8 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OverviewForm from "@/components/forms/OverviewForm";
+import SocialMediaForm from "@/components/forms/SocialForm";
+import TeamForm from "@/components/forms/TeamForm";
 
 const SettingsPage = () => {
   return (
@@ -15,8 +17,12 @@ const SettingsPage = () => {
         <TabsContent value="overview">
           <OverviewForm />
         </TabsContent>
-        <TabsContent value="social-links">Social Links</TabsContent>
-        <TabsContent value="teams">Teams</TabsContent>
+        <TabsContent value="social-links">
+          <SocialMediaForm />
+        </TabsContent>
+        <TabsContent value="teams">
+          <TeamForm />
+        </TabsContent>
       </Tabs>
     </div>
   );
