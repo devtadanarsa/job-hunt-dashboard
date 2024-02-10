@@ -7,10 +7,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { JOB_APPLICANT_COLUMNS, JOB_APPLICANT_DATA } from "@/constants";
+import { JOB_APPLICANT_COLUMNS } from "@/constants";
 import ButtonActionTableProps from "../ButtonActionTable";
+import { FC } from "react";
 
-const Applicants = () => {
+interface ApplicantsProps {
+  applicants: any;
+}
+
+const Applicants: FC<ApplicantsProps> = ({ applicants }) => {
   return (
     <Table>
       <TableCaption>A list of your recent invoices.</TableCaption>
@@ -23,15 +28,18 @@ const Applicants = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {JOB_APPLICANT_DATA.map((item: any, i: number) => (
-          <TableRow key={i}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>{item.appliedDate}</TableCell>
-            <TableCell>
-              <ButtonActionTableProps url="job-detail/1" />
-            </TableCell>
-          </TableRow>
-        ))}
+        {applicants && (
+          <>
+            {applicants.map((item: any, i: number) => (
+              <TableRow key={item.id + i}>
+                <TableCell>{item.user.name}</TableCell>
+                <TableCell>
+                  <ButtonActionTableProps url="" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </>
+        )}
       </TableBody>
     </Table>
   );

@@ -3,7 +3,7 @@
 import { overviewFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import TitleForm from "@/components/atoms/TitleForm";
@@ -33,22 +33,88 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, fetcher } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import InputSkills from "@/components/organisms/InputSkills";
 import CKEditor from "@/components/organisms/CKEditor";
+import useSWR from "swr";
+import { CompanyOverview, Industry } from "@prisma/client";
+import { supabaseUploadFile } from "@/lib/supabase";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
-const OverviewForm = () => {
+interface OverviewFormProps {
+  detail: CompanyOverview | undefined;
+}
+
+const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const { data, error, isLoading } = useSWR<Industry[]>(
+    "api/company/industry",
+    fetcher
+  );
 
   const form = useForm<z.infer<typeof overviewFormSchema>>({
     resolver: zodResolver(overviewFormSchema),
+    defaultValues: {
+      dateFounded: detail?.dateFounded,
+      description: detail?.description,
+      employee: detail?.employee,
+      image: detail?.image,
+      industry: detail?.industry,
+      location: detail?.location,
+      name: detail?.name,
+      techStack: detail?.techStack,
+      website: detail?.website,
+    },
   });
 
-  const onSubmit = (values: z.infer<typeof overviewFormSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof overviewFormSchema>) => {
+    try {
+      let filename = "";
+
+      if (typeof values.image === "object") {
+        const uploadImg = await supabaseUploadFile(values.image, "company");
+        filename = uploadImg.fileName;
+      } else {
+        filename = values.image;
+      }
+
+      const body = {
+        ...values,
+        image: filename,
+        companyId: session?.user.id,
+      };
+
+      await fetch("/api/company/overview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      await toast({
+        title: "Success",
+        description: "Profile edited successfully",
+      });
+
+      console.log(body);
+
+      router.refresh();
+    } catch (error) {
+      await toast({
+        title: "Error",
+        description: "Please try again",
+      });
+
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -148,7 +214,7 @@ const OverviewForm = () => {
                 <div className="w-[450px] grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="employees"
+                    name="employee"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Employee</FormLabel>
@@ -191,13 +257,14 @@ const OverviewForm = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {LOCATION_OPTIONS.map(
-                              (item: optionType, i: number) => (
-                                <SelectItem key={item.id + i} value={item.id}>
-                                  {item.label}
-                                </SelectItem>
-                              )
-                            )}
+                            {data?.map((item: Industry) => (
+                              <SelectItem
+                                key={item.id + item.name}
+                                value={item.id}
+                              >
+                                {item.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
