@@ -13,14 +13,33 @@ import {
 import { JOB_LISTING_COLUMNS, JOB_LISTING_DATA } from "@/constants";
 import { MoreVerticalIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import prisma from "../../../../lib/prisma";
+import { getServerSession } from "next-auth";
+import { Job } from "@prisma/client";
+import { dateFormat } from "@/lib/utils";
+import moment from "moment";
 
-const JobListingsPage = () => {
+async function getJobData() {
+  const session = await getServerSession();
+
+  const jobs = prisma.job.findMany({
+    where: {
+      companyId: session?.user.id,
+    },
+  });
+
+  return jobs;
+}
+
+const JobListingsPage = async () => {
+  const jobs = await getJobData();
+  console.log(jobs);
+
   return (
     <div>
       <div className="font-semibold text-3xl"></div>
       <div className="mt-10">
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
               {JOB_LISTING_COLUMNS.map((item: string, i: number) => (
@@ -30,14 +49,18 @@ const JobListingsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {JOB_LISTING_DATA.map((item: any, i: number) => (
+            {jobs.map((item: Job, i: number) => (
               <TableRow key={i}>
                 <TableCell>{item.roles}</TableCell>
                 <TableCell>
-                  <Badge>{item.status}</Badge>
+                  {moment(item.datePosted).isBefore(item.dueDate) ? (
+                    <Badge>Live</Badge>
+                  ) : (
+                    <Badge variant="destructive">Expired</Badge>
+                  )}
                 </TableCell>
-                <TableCell>{item.datePosted}</TableCell>
-                <TableCell>{item.dueDate}</TableCell>
+                <TableCell>{dateFormat(item.datePosted)}</TableCell>
+                <TableCell>{dateFormat(item.dueDate)}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{item.jobType}</Badge>
                 </TableCell>

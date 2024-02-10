@@ -33,9 +33,25 @@ import InputSkills from "@/components/organisms/InputSkills";
 import CKEditor from "@/components/organisms/CKEditor";
 import InputBenefits from "@/components/organisms/InputBenefit";
 import { Button } from "@/components/ui/button";
+import useSWR from "swr";
+import { fetcher } from "@/lib/utils";
+import { CategoryJob } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import moment from "moment";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const PostJobPage = () => {
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
+  const { data, error, isLoading } = useSWR<CategoryJob[]>(
+    "/api/job/categories",
+    fetcher
+  );
 
   const form = useForm<z.infer<typeof jobFormSchema>>({
     resolver: zodResolver(jobFormSchema),
@@ -44,8 +60,41 @@ const PostJobPage = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof jobFormSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof jobFormSchema>) => {
+    try {
+      const body: any = {
+        applicants: 0,
+        benefits: values.benefits,
+        categoryId: values.categoryId,
+        companyId: session?.user.id!!,
+        datePosted: moment().toDate(),
+        dueDate: moment().add(1, "M").toDate(),
+        description: values.jobDescription,
+        jobType: values.jobType,
+        needs: 20,
+        niceToHaves: values.niceToHaves,
+        requiredSkills: values.requiredSkills,
+        responsibility: values.responsibility,
+        roles: values.roles,
+        salaryFrom: values.salaryFrom,
+        salaryTo: values.salaryTo,
+        whoYouAre: values.whoYouAre,
+      };
+
+      await fetch("/api/job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      await router.push("/job-listings");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please try again",
+      });
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -178,7 +227,7 @@ const PostJobPage = () => {
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Select Job Categories</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -189,13 +238,11 @@ const PostJobPage = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                      {data?.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

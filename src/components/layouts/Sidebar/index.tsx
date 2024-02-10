@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
   AiOutlineCalendar,
@@ -82,6 +83,7 @@ const Sidebar = () => {
               <Button
                 variant={"ghost"}
                 className="w-full text-red-500 justify-start rounded-none hover:bg-red-200 hover:text-red-500"
+                onClick={() => signOut()}
               >
                 <AiOutlineLogout className="mr-2 text-lg" />
                 Logout
