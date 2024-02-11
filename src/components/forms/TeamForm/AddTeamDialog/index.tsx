@@ -25,14 +25,47 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const AddTeamDialog = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof teamFormSchema>>({
     resolver: zodResolver(teamFormSchema),
   });
 
-  const onSubmit = (values: z.infer<typeof teamFormSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof teamFormSchema>) => {
+    try {
+      const body = {
+        ...values,
+        companyId: session?.user.id,
+      };
+
+      await fetch("api/company/teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      await toast({
+        title: "Success",
+        description: "Team member updated",
+      });
+
+      router.push("/settings");
+      router.refresh();
+    } catch (error) {
+      await toast({
+        title: "Error",
+        description: "Please try again",
+      });
+
+      console.log(error);
+    }
   };
 
   return (

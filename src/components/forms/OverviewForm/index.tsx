@@ -104,8 +104,6 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
         description: "Profile edited successfully",
       });
 
-      console.log(body);
-
       router.refresh();
     } catch (error) {
       await toast({

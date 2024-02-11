@@ -14,6 +14,8 @@ async function getCompanyDetail() {
     where: { id: session?.user.id },
     include: {
       CompanyOverview: true,
+      CompanySocialMedia: true,
+      CompanyTeam: true,
     },
   });
 
@@ -36,10 +38,10 @@ const SettingsPage = async () => {
           <OverviewForm detail={companyDetail?.CompanyOverview[0]} />
         </TabsContent>
         <TabsContent value="social-links">
-          <SocialMediaForm />
+          <SocialMediaForm detail={companyDetail?.CompanySocialMedia[0]} />
         </TabsContent>
         <TabsContent value="teams">
-          <TeamForm />
+          <TeamForm detail={companyDetail?.CompanyTeam} />
         </TabsContent>
       </Tabs>
     </div>
