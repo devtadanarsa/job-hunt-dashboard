@@ -197,7 +197,7 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
                         <SelectContent>
                           {LOCATION_OPTIONS.map(
                             (item: optionType, i: number) => (
-                              <SelectItem key={item.id + i} value={item.id}>
+                              <SelectItem key={item.id + i} value={item.label}>
                                 {item.label}
                               </SelectItem>
                             )
@@ -258,7 +258,7 @@ const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
                             {data?.map((item: Industry) => (
                               <SelectItem
                                 key={item.id + item.name}
-                                value={item.id}
+                                value={item.name}
                               >
                                 {item.name}
                               </SelectItem>

@@ -10,17 +10,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { JOB_LISTING_COLUMNS, JOB_LISTING_DATA } from "@/constants";
-import { MoreVerticalIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { JOB_LISTING_COLUMNS } from "@/constants";
 import prisma from "../../../../lib/prisma";
 import { getServerSession } from "next-auth";
 import { Job } from "@prisma/client";
-import { dateFormat } from "@/lib/utils";
+import { authOptions, dateFormat } from "@/lib/utils";
 import moment from "moment";
 
 async function getJobData() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   const jobs = prisma.job.findMany({
     where: {

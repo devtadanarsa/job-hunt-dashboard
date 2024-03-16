@@ -58,9 +58,9 @@ export const authOptions: NextAuthOptions = {
 
         if (isMatch) {
           return user;
+        } else {
+          return null;
         }
-
-        return null;
       },
     }),
   ],
@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       session.user.id = token.id as string;
 
       return session;

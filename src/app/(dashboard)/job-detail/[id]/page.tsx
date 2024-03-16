@@ -37,7 +37,6 @@ async function getJobDetail(id: string) {
 const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
   const session = await getServerSession(authOptions);
   const job = await getJobDetail(params.id);
-  console.log(job);
 
   return (
     <div>

@@ -303,17 +303,6 @@ const PostJobPage = () => {
           </FieldInput>
 
           <FieldInput
-            title="Nice-To-Haves"
-            subtitle="Add nice-to-have skills and qualification for the role to encourage a more diverse set of candidates to apply"
-          >
-            <CKEditor
-              form={form}
-              name="niceToHaves"
-              editorLoaded={editorLoaded}
-            />
-          </FieldInput>
-
-          <FieldInput
             title="Perks and Benefits"
             subtitle="Encourage more people to apply by sharing the attractive rewards and benefits you offer your employees"
           >
