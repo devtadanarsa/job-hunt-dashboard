@@ -17,6 +17,8 @@ import { Job } from "@prisma/client";
 import { authOptions, dateFormat } from "@/lib/utils";
 import moment from "moment";
 
+export const revalidate = 0;
+
 async function getJobData() {
   const session = await getServerSession(authOptions);
 

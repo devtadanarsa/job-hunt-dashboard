@@ -16,6 +16,8 @@ interface JobDetailPageProps {
   params: paramsType;
 }
 
+export const revalidate = 0;
+
 async function getJobDetail(id: string) {
   const job = await prisma.job.findFirst({
     where: {
